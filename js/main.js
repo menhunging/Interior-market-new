@@ -291,8 +291,8 @@ $(document).ready(function () {
         e.preventDefault();
         count--;
 
-        if (count < 0) {
-          count = 0;
+        if (count <= 0) {
+          count = 1;
         }
 
         input.val(count);
@@ -596,7 +596,14 @@ $(document).ready(function () {
     Fancybox.bind("[data-fancybox]", {
       speedIn: 600,
       speedOut: 600,
+      helpers: {
+        media: {},
+      },
     });
+  }
+
+  if ($(".article-anchor ul").length > 0) {
+    $(".article-anchor ul").wrapAll($("<div class='block-blur'></div>"));
   }
 });
 
@@ -633,6 +640,50 @@ $(window).on("resize", function () {
     ) {
       getPositionBtnFilter($(".mobile-filter"));
     }
+  }
+});
+
+$(window).on("load", function () {
+  if ($("#map").length > 0) {
+    setTimeout(() => ymapsLoad(), 500);
+    setTimeout(() => ymaps.ready(init), 1000);
+  }
+
+  function ymapsLoad() {
+    var script = document.createElement("script");
+    script.src =
+      "https://api-maps.yandex.ru/2.1/?apikey=0cec76e1-1847-46ed-a96a-c84c0917f2ad&lang=ru_RU";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+
+  function init() {
+    var myMap = new ymaps.Map("map", {
+      center: [55.744756354739636, 37.57666889814756],
+      zoom: 13,
+      controls: [],
+    });
+
+    myPlacemarkWithContent = new ymaps.Placemark(
+      [55.744756354739636, 37.57666889814756],
+      {},
+      {
+        // Опции.
+        // Необходимо указать данный тип макета.
+        iconLayout: "default#imageWithContent",
+        // // Своё изображение иконки метки.
+        iconImageHref: "/img/placeholder.svg",
+        // // Размеры метки.
+        iconImageSize: [55, 55],
+        // // Смещение левого верхнего угла иконки относительно
+        // // её "ножки" (точки привязки).
+        iconImageOffset: [-22.5, -55],
+        // // Смещение слоя с содержимым относительно слоя с картинкой.
+        iconContentOffset: [0, 0],
+      }
+    );
+    myMap.geoObjects.add(myPlacemarkWithContent);
+    myMap.panes.get("ground").getElement().style.filter = "grayscale(100%)";
+    myMap.behaviors.disable("scrollZoom");
   }
 });
 
@@ -879,3 +930,84 @@ function closeVideoPoster(parents) {
   parents.addClass("clearPoster");
   $(".video-poster").hide();
 }
+
+$(document).on("click", ".cart-item-js", function (event) {
+  var $self = $(this);
+
+  var productId = $self.data('id');
+  var action = $self.data('action');
+
+  if(action == 'UpdateBasketItem'){
+    var quantity = $('.basket-form .input-count[data-id="' + productId + '"]').val();
+  }
+  else if(action == 'UpdateBasketMiniItem') {
+    var quantity = $('.basket-invis .input-count[data-id="' + productId + '"]').val();
+  }
+    var data = {
+      id: productId,
+      action: action,
+      quantity:quantity
+    }
+
+    if(!action){
+       data = {
+        action: 'clearBasketFull',
+      }
+    }
+  $.ajax({
+    url: '/local/ajax/cart.php',
+    method: 'post',
+    dataType: 'html',
+    data: data,
+    success: function (response) {
+      if(action == 'ClearBasketItem'){
+        $('.basket-item[data-id="' + productId + '"]').remove();
+        if($('.basket-form .basket-item').length <= 0){
+            location.reload();
+        }
+
+        $('.count-basket').html(response);
+      }
+      else if(action == 'UpdateBasketItem' || action == 'UpdateBasketMiniItem'){
+
+      }
+      else {
+        if(action){
+          location.reload();
+        }
+        else {
+          location.href = '/cart/success/';
+        }
+      }
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(textStatus, errorThrown);
+    }
+
+  });
+
+});
+
+$(document).on("submit", "#cartCheckout", function (e) {
+  e.preventDefault();
+  var form = $(this);
+  var order = true;
+  form.find('input[name="sp"]').val("nospam");
+  var actionUrl = form.attr("action");
+  $.ajax({
+    type: "post",
+    url: actionUrl,
+    dataType: "html",
+    data: form.serialize(),
+    success: function (response) {
+      form[0].reset();
+      $('.clear-basket-success.cart-item-js').click();
+    },
+  });
+});
+$(document).on("click", ".catalog-collections__more--plus", function (event) {
+  event.preventDefault();
+  $('.collections-list li').show();
+  $(this).hide();
+
+});

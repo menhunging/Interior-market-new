@@ -568,6 +568,9 @@ input {
   -moz-box-shadow: none;
   box-shadow: none;
   z-index: -1;
+  min-width: 140px;
+  right: 0;
+  left: auto;
 }
 
 .selectric-scroll {
@@ -2273,6 +2276,11 @@ a.caption:hover {
   -moz-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
+  min-height: 32px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .product-card .product-card__price {
   font-weight: 400;
@@ -3055,7 +3063,7 @@ a.caption:hover {
   padding-top: 30px;
 }
 .category-text__line {
-  padding: 56px 0;
+  padding: 36px 0;
   font-weight: 400;
   font-size: 16px;
   line-height: 32px;
@@ -3288,6 +3296,13 @@ a.caption:hover {
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration 0.3s;
+  display: box;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden !important;
+  min-height: 49px;
+  text-decoration-skip-ink: none;
 }
 .slider-article .date {
   margin-top: 16px;
@@ -3358,13 +3373,16 @@ a.caption:hover {
   max-width: 100%;
   justify-content: center;
 }
+.article-anchor.fixed .article-anchor__inner::before {
+  display: none;
+}
 .article-anchor.fixed .article-anchor__inner ul {
   max-width: 100%;
   justify-content: center;
 }
 .article-anchor ul {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 24px;
   max-width: 630px;
   width: 100%;
@@ -3594,11 +3612,16 @@ a.caption:hover {
 }
 .brand-item-more__col .picture {
   width: 120px;
-  height: 106px;
+  height: 100px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+}
+.brand-item-more__col .picture img {
+  width: 120px;
+  height: 100px;
+  object-fit: contain;
 }
 .brand-item-more a {
   text-decoration: underline;
@@ -5383,10 +5406,6 @@ a.caption:hover {
 .selections-details .orders-details__right li:last-child .price {
   color: #bb0909;
 }
-.selections-details .catalog-list .product-card .product-card__picture {
-  height: auto;
-  padding-top: 100%;
-}
 .selections-details .product-card__price {
   display: flex;
   flex-direction: column;
@@ -5657,6 +5676,79 @@ a.caption:hover {
   border: 1px solid #0b8a4d;
   background: rgba(0, 0, 0, 0.04);
   width: 100%;
+}
+
+.link-fancybox {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+.link-fancybox .icon-play {
+  border-radius: 50%;
+  border: solid 1px #fff;
+  padding: 10px;
+}
+.link-fancybox svg {
+  width: 80px;
+  height: 80px;
+}
+
+.article-anchor__inner {
+  position: relative;
+}
+.article-anchor__inner::before {
+  content: "";
+  position: absolute;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(270deg, #fff 0%, rgba(255, 255, 255, 0) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+.article-anchor__inner .block-blur {
+  position: relative;
+  width: 100%;
+  padding-bottom: 10px;
+  overflow: auto;
+}
+.article-anchor__inner .block-blur::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.article-anchor__inner .block-blur::-webkit-scrollbar-track {
+  background: #d9d9d9;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
+}
+.article-anchor__inner .block-blur::-webkit-scrollbar-thumb {
+  background: rgb(0, 0, 0);
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
 }
 
 @media (min-width: 1441px) {
@@ -5967,7 +6059,7 @@ a.caption:hover {
     width: calc(50% - 16px);
   }
   .category-text__line {
-    padding: 30px 0;
+    padding: 20px 0;
   }
   .collections-section .caption {
     margin-bottom: 32px;
@@ -6336,6 +6428,11 @@ a.caption:hover {
     left: -15px;
     position: relative;
     width: calc(100% + 27px);
+  }
+  .article-anchor__inner::before {
+    display: none;
+  }
+  .article-anchor__inner ul {
     padding: 0 15px;
   }
   .article-anchor {
